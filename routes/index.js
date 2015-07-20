@@ -6,6 +6,8 @@ router.get('/', function(req, res, next) {
   res.redirect(301, 'http://andersonmeira.com');
 });
 
+/*Testes*/
+
 router.get('/:url', function(req, res, next) {
   
   var url = 'http://'+req.hostname+'/'+ req.params.url;
@@ -24,3 +26,5 @@ router.get('/:url', function(req, res, next) {
 });
 
 module.exports = router;
+
+
