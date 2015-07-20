@@ -6,25 +6,39 @@ router.get('/', function(req, res, next) {
   res.redirect(301, 'http://andersonmeira.com');
 });
 
-/*Testes*/
-
 router.get('/:url', function(req, res, next) {
   
   var url = 'http://'+req.hostname+'/'+ req.params.url;
   var link = models.Link;
 
-  link.find({where: {short_url:url} })
-  	.then(function(result){
-      	result.click = result.click + 1;
-      	result.save();
-      	res.redirect(301, result.original_url);
+  link.findOne({where: {short_url:url} })
+  	.then(function(link){
+        if(link){
+      	 link.click = link.click + 1;
+      	 link.save();
+      	 res.redirect(301, link.original_url);
+        } else {
+          res.sendStatus(404);
+        }
     })
-    .error(function(err){
-      	res.send('error');
-     	next();
+    .catch(function(err){
+     	res.send(500, err);
+    });
+});
+
+router.get('/:url/_stats', function(req, res, next) {
+  
+  var url = 'http://'+req.hostname+'/'+ req.params.url;
+  var link = models.Link;
+
+  link.findOne({where: {short_url:url} })
+    .then(function(link){
+        var click = link.click;
+        res.json({clicks: click});
+    })
+    .catch(function(err){
+      res.send(500, err);
     });
 });
 
 module.exports = router;
-
-

@@ -23,6 +23,7 @@ router.post('/', function(req, res, next) {
 	})
 	.error(function(err){
     res.json({message: err.message});
+    next(err);
   });
 
 });
