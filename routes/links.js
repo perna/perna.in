@@ -14,6 +14,7 @@ router.post('/', function(req, res, next) {
 
 	link.create({
 		original_url: req.body.url,
+		ip_user: req.ip,
 		click: 0
 	})
 	.then(function(result) {

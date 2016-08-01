@@ -26,7 +26,16 @@ module.exports = function(sequelize, DataTypes) {
 
     click: {
       type: DataTypes.INTEGER
-    }
+    },
+
+    ip_user: {
+      type: DataTypes.STRING(15),
+      allowNull: false,
+      validate: {
+        isIP: true
+      }
+    },
+
   }, 
 
   {

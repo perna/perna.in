@@ -2,6 +2,7 @@ var express = require('express');
 var models = require('../models/');
 var router = express.Router();
 
+
 router.get('/', function(req, res, next) {
   res.redirect(301, 'http://andersonmeira.com');
 });
@@ -9,21 +10,21 @@ router.get('/', function(req, res, next) {
 router.get('/:url', function(req, res, next) {
   
   var url = 'http://'+req.hostname+'/'+ req.params.url;
-  var link = models.Link;
+  var Link = models.Link;
 
-  link.findOne({where: {short_url:url} })
+
+
+  Link.findOne({where: {short_url:url} })
   	.then(function(link){
-        if(link){
-      	 link.click = link.click + 1;
-      	 link.save();
-      	 res.redirect(301, link.original_url);
-        } else {
-          res.sendStatus(404);
-        }
+        link.increment(['click'],{by: 1})
+          .then(function(){
+      	     res.redirect(301, link.original_url);
+          })
     })
     .catch(function(err){
-     	res.send(500, err);
+     	res.status(404).send(err);
     });
+    
 });
 
 router.get('/:url/_stats', function(req, res, next) {
@@ -37,7 +38,7 @@ router.get('/:url/_stats', function(req, res, next) {
         res.json({clicks: click});
     })
     .catch(function(err){
-      res.send(500, err);
+      res.status(500).send(err);
     });
 });
 
