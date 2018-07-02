@@ -1,53 +1,36 @@
-'use strict';
-module.exports = function(sequelize, DataTypes) {
-  var Link = sequelize.define('Link', {
-    
-    original_url: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        isUrl: true
-      }
-    },
+'use strict'
 
-    short_url: {
-      type: DataTypes.STRING,
-      index:true,
-      validate: {
-        isUrl: true
-      }
-    },
+const mongoose = require('mongoose')
+require('mongoose-type-url')
 
-    public: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: true
-    },
+const { Schema } = mongoose
 
-    click: {
-      type: DataTypes.INTEGER
-    },
-
-    ip_user: {
-      type: DataTypes.STRING(15),
-      allowNull: false,
-      validate: {
-        isIP: true
-      }
-    },
-
-  }, 
-
+const LinkSchema = new Schema(
   {
-    freezeTableName: true
+    originalUrl: {
+      type: mongoose.SchemaTypes.Url,
+      required: true
+    },
+    shortUrl: {
+      type: String,
+      required: true,
+      index: true
+    },
+    clicks: {type: Number}
   },
+  { timestamps: true },
+  { collection: 'links' }
+)
 
+const CounterSchema = new Schema(
   {
-    classMethods: {
-      associate: function(models) {
-        // associations can be defined here
-      }
-    }
-  });
-  return Link;
-};
+    counter: { type: Number }
+  },
+  { collection: 'counter' }
+)
+
+const Link = mongoose.model('Link', LinkSchema)
+const Counter = mongoose.model('Counter', CounterSchema)
+
+module.exports = Link
+module.exports = Counter
